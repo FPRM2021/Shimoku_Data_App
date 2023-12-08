@@ -21,6 +21,9 @@ The Shimoku Data App is a comprehensive dashboard for analyzing video game sales
 ### Screenshot 3
 ![Screenshot 3](assets/3.png)
 
+### Screenshot 3
+![Screenshot 4](assets/4.png)
+
 ## Getting Started
 
 1. **Installation:**
