@@ -1,7 +1,7 @@
 from os import getenv
 from dotenv import load_dotenv
 import shimoku_api_python as Shimoku
-import dashboard
+from dashboard import Dashboard
 
 
 def main():
@@ -13,19 +13,18 @@ def main():
     universe_id: str = getenv("UNIVERSE_ID")
     workspace_id: str = getenv("WORKSPACE_ID")
 
-    #Initialize Shimoku client with the provided credentials
-    
+    # Initialize Shimoku client with the provided credentials
+
     s = Shimoku.Client(
         access_token=access_token,
         universe_id=universe_id,
     )
 
-    
     # Set the workspace for Shimoku client
     s.set_workspace(uuid=workspace_id)
 
     # Create a Dashboard object using the Shimoku client
-    dboard = dashboard.Dashboard(s)
+    dboard = Dashboard(s)
 
     # Set up and display the dashboard
     dboard.setDashboard()

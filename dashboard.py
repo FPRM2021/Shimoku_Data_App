@@ -51,8 +51,6 @@ class Dashboard:
 
         self.plotTop3()
 
-        #self.plotTop3("Platform")
-
     def plotHeader(self, title: str) -> None:
         """
         Plots the header of the dashboard.
@@ -249,7 +247,7 @@ class Dashboard:
             },
             {
                 "title": f"{top1} Last Release",
-                "description": f"{column} first year",
+                "description": f"{column} last year",
                 "value": top1LastRelease,
                 "color": "success",
                 "align": "center",
@@ -322,15 +320,17 @@ class Dashboard:
         self.getTop3Data('Genre')
 
         T3G = Top3(self)
-        T3G.plot()
+
+        subtitle1 = 'The 3 top genres in videogames with their first and last year release'
+        T3G.plot('Top 3 Genres', subtitle1)
 
         self.getTop3Data('Platform')
 
         T3G.df_app = self.df_app
         T3G.df_app2 = self.df_app2
         T3G.df_app3 = self.df_app3
-
-        T3G.plot()
+        subtitle2 = 'The 3 top platforms in videogames with their first and last year release'
+        T3G.plot('Top 3 Platforms', subtitle2)
 
 
         

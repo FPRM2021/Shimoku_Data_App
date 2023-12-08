@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from typing import Tuple
 
+
 def getData(fileNames: list) -> dict:
     """
     Get the data in DataFrames from the files in the data folder.
@@ -253,8 +254,6 @@ def getTopN(df: pd.DataFrame, column: str, n: int) -> pd.DataFrame:
     return columnSum.nlargest(n, "Global_Sales")[[column, "Global_Sales"]]
 
 
-
-
 def firstLastRelease(df: pd.DataFrame, column: str, top: str) -> Tuple[int, int]:
     """
     Finds the first and last release years for the specified item in the given column.
@@ -274,6 +273,7 @@ def firstLastRelease(df: pd.DataFrame, column: str, top: str) -> Tuple[int, int]
         "Year_of_Release"
     ].max()
     return firstDate, LastDate
+
 
 def convert_dataframe_to_array(df: pd.DataFrame) -> list:
     """Convert a DataFrame to a list of dictionaries.

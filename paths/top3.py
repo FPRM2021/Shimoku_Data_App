@@ -1,18 +1,19 @@
+from typing import Any, Dict, List
+
 from utils import convert_dataframe_to_array
 from dashboard import Dashboard
 
-
 class Top3(Dashboard):
     """
-    This path is responsible for rendering the user overview page.
+    This path is responsible for rendering the Top 3 page.
     """
 
-    def __init__(self, self_board: Dashboard):
+    def __init__(self, self_board: Dashboard) -> None:
         """
-        Initializes the HiddenIndicatorsPage with a shimoku client instance.
+        Initializes the Top3 path with a shimoku client instance.
 
         Parameters:
-            shimoku: An instance of the Shimoku client.
+            self_board (Dashboard): An instance of the Dashboard class.
         """
         super().__init__(self_board.shimoku)
         self.df_app = self_board.df_app
@@ -29,14 +30,25 @@ class Top3(Dashboard):
         # Create the menu path
         self.shimoku.set_menu_path(name=self.menu_path)
 
-    def plot(self):
+    def plot(self, title: str, subtitle: str) -> bool:
         """
-        Plots the user overview page.
-        Each method is responsible for plotting a specific section of the page.
-        """
-        self.plot_kpi_indicators()
+        Plots the Top 3 page.
 
-    def plot_kpi_indicators(self):
+        Parameters:
+            title (str): The title of the page.
+            subtitle (str): The subtitle of the page.
+
+        Returns:
+            bool: True if plotting is successful.
+        """
+        self.plotHeader(title, subtitle)
+        self.plot_kpi_indicators()
+        return True
+
+    def plot_kpi_indicators(self) -> None:
+        """
+        Plots the Key Performance Indicators (KPIs) for the Top 3 page.
+        """
         self.shimoku.plt.indicator(
             data=convert_dataframe_to_array(self.df_app["main_kpis"]),
             order=self.order,
@@ -76,4 +88,19 @@ class Top3(Dashboard):
         )
         self.order += len(self.df_app3["main_kpis3"]) + 1
 
-        return True
+    def plotHeader(self, title: str, subtitle: str) -> None:
+        """
+        Plots the header of the Top 3 page.
+
+        Parameters:
+            title (str): The title of the page.
+            subtitle (str): The subtitle of the page.
+        """
+        self.shimoku.plt.html(
+            order=self.order,
+            html=self.shimoku.html_components.create_h1_title(
+                title=title,
+                subtitle=subtitle
+            )
+        )
+        self.order += 1
