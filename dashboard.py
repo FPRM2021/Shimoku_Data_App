@@ -2,6 +2,7 @@ import pandas as pd
 from shimoku_api_python import Client
 import utils  # Assuming utils.py contains the required utility functions
 
+
 class Dashboard:
     def __init__(self, shimoku: Client) -> None:
         """
@@ -39,12 +40,18 @@ class Dashboard:
         self.shimoku.set_menu_path(name="Video Game Sales Report")
 
         self.plotHeader("Overview")
+
         self.plotData("Genre")
         self.plotReleasesYearRelease()
-        self.plotSalesYearRelease('Genre')
+        self.plotSalesYearRelease("Genre")
         self.plotGenres()
+
         self.plotData("Platform")
-        self.plotSalesYearRelease('Platform')
+        self.plotSalesYearRelease("Platform")
+
+        self.plotTop3()
+
+        #self.plotTop3("Platform")
 
     def plotHeader(self, title: str) -> None:
         """
@@ -73,7 +80,7 @@ class Dashboard:
         - None
         """
         dfVG_Sales = self.dfs["Video_Games_Sales_as_at_22_Dec_2016"]
-        releasesPerYear = utils.groupingByYearCount(dfVG_Sales, 'Genre')
+        releasesPerYear = utils.groupingByYearCount(dfVG_Sales, "Genre")
         self.shimoku.plt.stacked_bar(
             data=releasesPerYear,
             x="Year_of_Release",
@@ -91,7 +98,7 @@ class Dashboard:
         )
         self.order += 1
 
-        releasesPerYear = utils.groupingByYearCountPercetange(dfVG_Sales, 'Genre')
+        releasesPerYear = utils.groupingByYearCountPercetange(dfVG_Sales, "Genre")
         self.shimoku.plt.stacked_bar(
             data=releasesPerYear,
             x="Year_of_Release",
@@ -155,9 +162,6 @@ class Dashboard:
         )
         self.order += 1
 
-    def top3Path(self, column: str):
-        dfVG_Sales = self.dfs["Video_Games_Sales_as_at_22_Dec_2016"]
-
     def plotData(self, column: str) -> None:
         """
         Plots KPIs (Key Performance Indicators) for the given dataset.
@@ -208,3 +212,125 @@ class Dashboard:
             title="Games Releases by Genre",
         )
         self.order += 1
+    def getTop3Data(self, column: str) -> None:
+        """
+        Gets data for the top 3 items in the specified column and sets up KPIs.
+
+        Parameters:
+        - column (str): The column for which top 3 data is to be obtained.
+
+        Returns:
+        - None
+        """
+        df = self.dfs["Video_Games_Sales_as_at_22_Dec_2016"]
+        dftop3 = utils.getTopN(df, column, 3)
+        top1 = str(dftop3.iloc[0][column])
+        top2 = str(dftop3.iloc[1][column])
+        top3 = str(dftop3.iloc[2][column])
+
+        top1FirstRelease, top1LastRelease = utils.firstLastRelease(df, column, top1)
+        top2FirstRelease, top2LastRelease = utils.firstLastRelease(df, column, top2)
+        top3FirstRelease, top3LastRelease = utils.firstLastRelease(df, column, top3)
+
+        main_kpis = [
+            {
+                "title": f"Top 1 {column}",
+                "description": f"{column} first place in sales",
+                "value": top1,
+                "color": "success",
+                "align": "center",
+            },
+            {
+                "title": f"{top1} First Release",
+                "description": f"{column} first year",
+                "value": top1FirstRelease,
+                "color": "success",
+                "align": "center",
+            },
+            {
+                "title": f"{top1} Last Release",
+                "description": f"{column} first year",
+                "value": top1LastRelease,
+                "color": "success",
+                "align": "center",
+            },
+        ]
+
+        self.df_app = {"main_kpis": pd.DataFrame(main_kpis)}
+
+        main_kpis2 = [
+            {
+                "title": f"Top 2 {column}",
+                "description": f"{column} second place in sales",
+                "value": top2,
+                "color": "success",
+                "align": "center",
+            },
+            {
+                "title": f"{top2} First Release",
+                "description": f"{column} first year",
+                "value": top2FirstRelease,
+                "color": "success",
+                "align": "center",
+            },
+            {
+                "title": f"{top2} Last Release",
+                "description": f"{column} last year",
+                "value": top2LastRelease,
+                "color": "success",
+                "align": "center",
+            },
+        ]
+
+        self.df_app2 = {"main_kpis2": pd.DataFrame(main_kpis2)}
+
+        main_kpis3 = [
+            {
+                "title": f"Top 3 {column}",
+                "description": f"{column} third place in sales",
+                "value": top3,
+                "color": "success",
+                "align": "center",
+            },
+            {
+                "title": f"{top3} First Release",
+                "description": f"{column} first year",
+                "value": top3FirstRelease,
+                "color": "success",
+                "align": "center",
+            },
+            {
+                "title": f"{top3} Last Release",
+                "description": f"{column} last year",
+                "value": top3LastRelease,
+                "color": "success",
+                "align": "center",
+            },
+        ]
+
+        self.df_app3 = {"main_kpis3": pd.DataFrame(main_kpis3)}
+
+    def plotTop3(self) -> None:
+        """
+        Plots KPIs for the top 3 items in the 'Genre' and 'Platform' columns.
+
+        Returns:
+        - None
+        """
+        from paths.top3 import Top3
+
+        self.getTop3Data('Genre')
+
+        T3G = Top3(self)
+        T3G.plot()
+
+        self.getTop3Data('Platform')
+
+        T3G.df_app = self.df_app
+        T3G.df_app2 = self.df_app2
+        T3G.df_app3 = self.df_app3
+
+        T3G.plot()
+
+
+        
